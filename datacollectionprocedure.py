@@ -2,6 +2,8 @@ from read_frames import readframes
 import schedule
 import time
 
+## $crontab -r to stop this in worst case scenario
+
 def playwakeupsample():
     directory = "/home/pi/Desktop/startup_script/data_collection/commands"
     directory += "/wakeupsignal_11000_12000_comb_tooth.wav"
@@ -12,28 +14,35 @@ def playpiecewisesample():
     directory += "/piecewise_10600_to_12600_comb_tooth.wav"
     readframes(directory)
 
-hour = 21
-minute = 30
-second = 0
+try:
+    hour_start = 20
+    minute_start = 32
+    second_start = 0
 
-for i in range(0, 1001, 20):
-    hour = 21 + i/3600
-    minute = 30 + i/60
-    second = i%60
-    time = "%d:%d:%d" % (hour, minute, second)
-    schedule.every().day.at(time).do(playwakeupsample)
+    for i in range(0, 1001, 20):
+        hour = "{:0>2d}".format(hour_start + i//3600)
+        minute = "{:0>2d}".format(minute_start + i//60)
+        second = "{:0>2d}".format((second_start + i)%60)
+        datetime = "%s:%s:%s" % (hour, minute, second)
+        print(datetime)
+        schedule.every().day.at(datetime).do(playwakeupsample)
 
-hour = 21
-minute = 30
-second = 10
+    hour_start = 20
+    minute_start = 32
+    second_start = 10
 
-for i in range(0, 1001, 20):
-    hour = 21 + i/3600
-    minute = 30 + i/60
-    second = i%60
-    time = "%d:%d:%d" % (hour, minute, second)
-    schedule.every().day.at(time).do(playpiecewisesample)
+    for i in range(0, 1001, 20):
+        hour = "{:0>2d}".format(hour_start + i//3600)
+        minute = "{:0>2d}".format(minute_start + i//60)
+        second = "{:0>2d}".format((second_start + i)%60)
+        datetime = "%s:%s:%s" % (hour, minute, second)
+        print(datetime)
+        schedule.every().day.at(datetime).do(playpiecewisesample).tag('data-collection')
 
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+except KeyboardInterrupt:
+    # Cleanup/exiting code
+    schedule.clear('data-collection')
