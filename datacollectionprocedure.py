@@ -15,25 +15,25 @@ def playpiecewisesample():
     readframes(directory)
 
 try:
-    hour_start = 20
-    minute_start = 32
+    hour_start = 22
+    minute_start = 9
     second_start = 0
 
     for i in range(0, 1001, 20):
-        hour = "{:0>2d}".format(hour_start + i//3600)
-        minute = "{:0>2d}".format(minute_start + i//60)
+        hour = "{:0>2d}".format((hour_start + i//3600)%3600)
+        minute = "{:0>2d}".format((minute_start + i//60)%60)
         second = "{:0>2d}".format((second_start + i)%60)
         datetime = "%s:%s:%s" % (hour, minute, second)
         print(datetime)
         schedule.every().day.at(datetime).do(playwakeupsample)
 
-    hour_start = 20
-    minute_start = 32
+    hour_start = 22
+    minute_start = 9
     second_start = 10
 
     for i in range(0, 1001, 20):
-        hour = "{:0>2d}".format(hour_start + i//3600)
-        minute = "{:0>2d}".format(minute_start + i//60)
+        hour = "{:0>2d}".format((hour_start + i//3600)%3600)
+        minute = "{:0>2d}".format((minute_start + i//60)%60)
         second = "{:0>2d}".format((second_start + i)%60)
         datetime = "%s:%s:%s" % (hour, minute, second)
         print(datetime)
